@@ -1,10 +1,10 @@
-# 🐝 MindBuzz: Multi-Modal Educational AI Platform for Character Tracing & Phoneme Pronunciation Assessment
+# MindBuzz: Multi-Modal Educational AI Platform for Character Tracing & Phoneme Pronunciation Assessment
 
 > **An end-to-end interactive AI studio for children**, combining **Computer Vision (EMNIST CNN)** for handwriting tracing, **Phoneme-Level Acoustic Assessment (Whisper ASR + MFA + GOP)** for speech evaluation, and **LPU-Accelerated LLMs (Groq Llama-3.3 70B)** for personalized AI tutoring.
 
 ---
 
-## 🌟 Executive Summary & Presentation Overview
+## Executive Summary & Presentation Overview
 
 MindBuzz is designed to solve a core challenge in early childhood education: **giving children instant, accurate, and encouraging feedback on both writing and speaking.** 
 
@@ -15,7 +15,7 @@ Unlike simple letter-tracing apps or generic voice recognizers, MindBuzz uses a 
 
 ---
 
-## 🛡️ Child Security, Privacy & Safety Architecture
+## Child Security, Privacy & Safety Architecture
 
 Child safety and data privacy are core architectural priorities in MindBuzz:
 
@@ -39,7 +39,7 @@ Child safety and data privacy are core architectural priorities in MindBuzz:
 
 ---
 
-## 🏗️ System Architecture & Data Flow
+## System Architecture & Data Flow
 
 ```text
                                ┌──────────────────────────────────────────┐
@@ -70,7 +70,7 @@ Child safety and data privacy are core architectural priorities in MindBuzz:
 
 ---
 
-## 🤖 Deep Dive into All 5 AI Models & Datasets Used
+## Deep Dive into All 5 AI Models & Datasets Used
 
 ### 1. OpenAI Whisper Speech Recognition Engine (ASR)
 * **What it Does**: Converts spoken audio from children into text to perform free-form speech transcription and determine if the uttered word matches the target word.
@@ -113,7 +113,7 @@ Child safety and data privacy are core architectural priorities in MindBuzz:
 
 ---
 
-## 🎯 How Pronunciation Assessment Was Improved
+## How Pronunciation Assessment Was Improved
 
 1. **Child-Calibrated Confidence Threshold (50%)**:
    * **Problem**: Standard ASR models expect adult articulation ($\ge 65\%$ threshold), causing false failures for young children with developing speech patterns.
@@ -131,7 +131,7 @@ Child safety and data privacy are core architectural priorities in MindBuzz:
 
 ---
 
-## 🚀 Hard Engineering Challenges Overcome
+## Hard Engineering Challenges Overcome
 
 ### Challenge 1: Whisper ASR vs. MFA/GOP Phonetic Discrepancy
 * **Issue**: When a child says `"ANT"`, Whisper often transcribes `"And..."` because unreleased stop consonants cut off softly. Users wondered why Whisper heard `"And..."` while MFA/GOP analyzed `"ANT"`.
@@ -153,7 +153,7 @@ Child safety and data privacy are core architectural priorities in MindBuzz:
 
 ---
 
-## 📡 API Architecture & Handling
+## API Architecture & Handling
 
 MindBuzz runs on a high-performance **FastAPI** backend supporting asynchronous request handling, CORS middleware, and multipart binary streaming.
 
@@ -166,7 +166,7 @@ MindBuzz runs on a high-performance **FastAPI** backend supporting asynchronous 
 
 ---
 
-## 🛠️ Complete Technology Stack
+## Complete Technology Stack
 
 * **Backend Framework**: Python 3.10+, FastAPI, Uvicorn.
 * **Deep Learning & CV**: TensorFlow 2.x, Keras, PyTorch, OpenCV (`cv2`), PIL (Pillow), NumPy, SciPy.
@@ -177,7 +177,7 @@ MindBuzz runs on a high-performance **FastAPI** backend supporting asynchronous 
 
 ---
 
-## 📁 Project Architecture & File Tree
+## Project Architecture & File Tree
 
 ```text
 Task3/
@@ -212,7 +212,7 @@ Task3/
 
 ---
 
-## 💻 How to Run the Project
+## How to Run the Project
 
 ### One-Click Start Command:
 ```bash
