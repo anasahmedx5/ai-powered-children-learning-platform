@@ -1,5 +1,7 @@
 # MindBuzz: Multi-Modal Educational AI Platform for Character Tracing & Phoneme Pronunciation Assessment
 
+![Tracing Canvas Example](assets/image.jpg)
+
 > **An end-to-end interactive AI studio for children**, combining **Computer Vision (EMNIST CNN)** for handwriting tracing, **Phoneme-Level Acoustic Assessment (Whisper ASR + MFA + GOP)** for speech evaluation, and **LPU-Accelerated LLMs (Groq Llama-3.3 70B)** for personalized AI tutoring.
 
 ---
