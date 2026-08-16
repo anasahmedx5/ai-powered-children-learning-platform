@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindBuzz Character Tracing Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="css/styles.css?v=1.0.2">
+</head>
+
+<body class="bg-slate-100 min-h-screen font-sans text-slate-800 flex flex-col justify-between">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-indigo-600 text-white shadow-xl py-4 px-6 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div
+                class="w-11 h-11 bg-amber-400 rounded-2xl flex items-center justify-center font-black text-indigo-900 text-2xl shadow-md border-2 border-amber-300">
+                M
+            </div>
+            <div>
+                <h1 class="text-2xl font-black tracking-wide leading-tight text-white">MindBuzz Tracing Studio</h1>
+                <p class="text-xs text-indigo-200 font-semibold">Interactive Alphabet &amp; Character Master</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3">
+            <!-- Score & Stars Badge -->
+            <div
+                class="flex items-center space-x-3 bg-indigo-900/50 backdrop-blur-md px-4 py-2 rounded-2xl border border-indigo-400/30 shadow-inner">
+                <div class="flex items-center space-x-1 font-black text-amber-300 text-sm">
+                    <span>🏆</span>
+                    <span id="header-score-display">0</span>
+                    <span class="text-[10px] text-amber-200 font-extrabold uppercase ml-0.5">pts</span>
+                </div>
+                <div class="h-4 w-px bg-indigo-400/40"></div>
+                <div class="flex items-center space-x-1 font-black text-yellow-300 text-sm">
+                    <span>⭐</span>
+                    <span id="header-stars-display">0</span>
+                </div>
+            </div>
+
+            <div
+                class="flex items-center space-x-2 bg-indigo-900/40 backdrop-blur-md px-4 py-2 rounded-2xl border border-indigo-400/30">
+                <span class="text-xs uppercase tracking-wider font-extrabold text-indigo-200">Active Mode:</span>
+                <span id="active-mode-display" class="font-black text-amber-300">Letter A</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto my-6 px-4 grid grid-cols-1 lg:grid-cols-12 gap-6 w-full items-start">
+
+        <!-- Left Controls Sidebar -->
+        <section
+            class="lg:col-span-5 bg-white rounded-3xl p-6 shadow-xl border border-slate-100 flex flex-col justify-between space-y-4">
+            <div>
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-sm font-extrabold text-slate-700 uppercase tracking-wider">Select Letter (A–Z)</h2>
+                </div>
+
+                <div id="alphabet-grid"
+                    class="grid grid-cols-7 sm:grid-cols-9 lg:grid-cols-7 gap-1.5 p-2 bg-slate-50 rounded-2xl border border-slate-200 mb-4 max-h-48 overflow-y-auto">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 mb-4">
+                    <button onclick="prevCharacter()"
+                        class="py-2.5 px-4 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-700 font-extrabold rounded-xl border border-slate-200 text-xs flex items-center justify-center space-x-1 transition-all active:scale-95">
+                        <span>&larr; Previous</span>
+                    </button>
+                    <button onclick="nextCharacter()"
+                        class="py-2.5 px-4 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-700 font-extrabold rounded-xl border border-slate-200 text-xs flex items-center justify-center space-x-1 transition-all active:scale-95">
+                        <span>Next &rarr;</span>
+                    </button>
+                </div>
+
+                <div class="mb-4 p-4 rounded-2xl bg-indigo-50/70 border border-indigo-100 flex items-center space-x-3">
+                    <div id="target-letter-badge"
+                        class="w-14 h-14 bg-indigo-600 text-white rounded-2xl flex items-center justify-center font-black text-3xl shadow-md border-2 border-indigo-400 shrink-0">
+                        A
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-extrabold text-indigo-900">1. Speak &amp; 2. Trace</h3>
+                        <p class="text-xs text-indigo-700 font-medium">Pronounce the target word to unlock freehand tracing!</p>
+                    </div>
+                </div>
+
+                <div id="speech-unlock-card"
+                    class="mb-4 p-5 rounded-3xl bg-slate-50 border border-slate-200/80 shadow-sm space-y-3.5">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+                            <span class="text-xs font-black uppercase text-slate-700 tracking-wider">Pronounce Target Word</span>
+                        </div>
+                        <span id="speech-target-badge"
+                            class="px-3 py-1 bg-indigo-600 text-white rounded-xl text-xs font-black shadow-sm">
+                            Say: Target Word
+                        </span>
+                    </div>
+
+                    <!-- Modern Prominent Target Word Banner -->
+                    <div
+                        class="bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 text-white rounded-2xl p-5 text-center shadow-lg border border-indigo-400/30 relative overflow-hidden word-card-glow">
+                        <div class="text-[11px] font-extrabold uppercase tracking-widest text-amber-300/90 mb-1">Target Word</div>
+                        <div id="speech-target-word-display"
+                            class="text-4xl sm:text-5xl font-black tracking-wide text-white drop-shadow-md py-1">
+                            ...
+                        </div>
+                        <div class="text-[11px] text-indigo-200 font-semibold mt-1">Press Listen to hear pronunciation</div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="btn-listen-word" onclick="speakWord()"
+                            class="py-3 px-3 bg-purple-600 hover:bg-purple-700 text-white font-extrabold rounded-xl shadow-md flex items-center justify-center space-x-1.5 transition-all active:scale-95 text-xs">
+                            <svg class="w-4 h-4 text-amber-300 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                            </svg>
+                            <span>Listen Word</span>
+                        </button>
+                        <button id="btn-mic-record" onclick="toggleVoiceRecording()"
+                            class="py-3 px-3 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl shadow-md flex items-center justify-center space-x-1.5 transition-all active:scale-95 text-xs">
+                            <svg id="mic-icon" class="w-4 h-4 text-amber-300 shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                            </svg>
+                            <span id="mic-btn-text">Record Voice</span>
+                        </button>
+                    </div>
+
+                    <!-- Unified Groq AI Speech Tutor Box -->
+                    <div id="groq-speech-coach-card" class="p-4 rounded-2xl bg-white border border-indigo-100 shadow-sm space-y-2.5 transition-all">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-1.5 text-xs font-black text-indigo-950">
+                                <span class="text-base">🤖</span>
+                                <span>Groq AI Speech Tutor</span>
+                            </div>
+                            <div id="groq-attempt-badge" class="px-2.5 py-0.5 bg-indigo-100 text-indigo-900 rounded-full text-[10px] font-black uppercase tracking-wider">
+                                Ready
+                            </div>
+                        </div>
+                        <div id="speech-status-card" class="text-xs font-semibold text-slate-700 leading-snug">
+                            <span id="speech-status-text">Click <strong>Listen Word</strong> to hear it, then <strong>Record Voice</strong> and pronounce <strong id="speech-target-word-text"
+                                    class="text-indigo-600 font-extrabold text-sm">Target Word</strong> clearly!</span>
+                        </div>
+                        <p id="groq-speech-msg" class="hidden text-xs font-bold text-slate-800 leading-snug italic bg-amber-100/60 p-2.5 rounded-xl border border-amber-200/60">
+                            "Try saying the word again!"
+                        </p>
+                        <div id="groq-problem-letter-row" class="hidden flex items-center space-x-2 pt-1 border-t border-slate-200 text-[11px] font-semibold text-slate-700">
+                            <span class="text-slate-500">Problem Letter:</span>
+                            <span id="groq-problem-letter-badge" class="px-2 py-0.5 bg-rose-500 text-white rounded-md font-black text-xs">P</span>
+                            <span class="text-slate-400">|</span>
+                            <span id="groq-letter-score-text" class="text-rose-700 font-extrabold">Conf: 45% (&lt; 50%)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="feedback-card" class="p-4 rounded-2xl bg-slate-100 border border-slate-200 transition-all">
+                    <div class="text-xs font-bold uppercase text-slate-400 mb-1">Canvas Status</div>
+                    <p id="feedback-text" class="text-sm font-bold text-slate-600">Pronounce the target word to unlock tracing.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Canvas Section -->
+        <section
+            class="lg:col-span-7 bg-white rounded-3xl p-6 shadow-xl border border-slate-100 flex flex-col items-center justify-center relative">
+
+            <div class="relative canvas-shadow rounded-3xl overflow-hidden border-4 border-indigo-100 bg-white">
+                <!-- Canvas Lock Overlay -->
+                <div id="canvas-lock-overlay"
+                    class="absolute inset-0 bg-slate-900/80 backdrop-blur-md z-30 flex flex-col items-center justify-center text-white p-6 text-center transition-all duration-300">
+                    <div
+                        class="w-16 h-16 bg-amber-400 text-indigo-950 rounded-3xl flex items-center justify-center mb-3 shadow-xl animate-bounce border-2 border-amber-300">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-black mb-1 tracking-wide">Tracing Locked</h3>
+                    <p class="text-xs text-slate-200 max-w-xs font-semibold leading-relaxed mb-4">
+                        Pronounce <span id="overlay-target-word"
+                            class="text-amber-300 font-extrabold underline">Target Word</span> using the mic to unlock the tracing canvas!
+                    </p>
+                    <div class="flex space-x-2">
+                        <button onclick="speakWord()"
+                            class="py-2.5 px-4 bg-purple-600 hover:bg-purple-500 text-white font-black rounded-xl text-xs shadow-lg flex items-center space-x-1.5 transition-all active:scale-95">
+                            <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                            </svg>
+                            <span>Listen Word</span>
+                        </button>
+                        <button onclick="toggleVoiceRecording()"
+                            class="py-2.5 px-4 bg-amber-400 hover:bg-amber-300 text-indigo-950 font-black rounded-xl text-xs shadow-lg flex items-center space-x-1.5 transition-all active:scale-95">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                            </svg>
+                            <span>Record Voice</span>
+                        </button>
+                    </div>
+                </div>
+
+                <canvas id="guideCanvas" width="450" height="450"
+                    class="absolute top-0 left-0 pointer-events-none z-0"></canvas>
+                <canvas id="drawCanvas" width="450" height="450"
+                    class="relative z-10 cursor-crosshair touch-none"></canvas>
+            </div>
+
+            <!-- Canvas Status Bar -->
+            <div class="mt-3 flex items-center justify-between w-full px-2 text-xs font-bold text-slate-500">
+                <span class="flex items-center space-x-2">
+                    <span id="canvas-status-dot"
+                        class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block animate-pulse"></span>
+                    <span id="canvas-status-label">Locked - Pronunciation Required</span>
+                </span>
+                <span id="stroke-status-display"
+                    class="text-amber-600 font-extrabold bg-amber-50 px-3 py-1 rounded-xl border border-amber-200">Locked</span>
+            </div>
+
+            <!-- Canvas Action Buttons directly UNDER the canvas -->
+            <div class="grid grid-cols-2 gap-3 w-full mt-4">
+                <button onclick="resetCanvas()"
+                    class="py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-black rounded-2xl shadow-lg transition-all active:scale-95 text-base flex items-center justify-center space-x-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    <span>Clear Canvas</span>
+                </button>
+                <button id="btn-submit-drawing" onclick="submitDrawing()"
+                    class="py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-lg transition-all active:scale-95 text-base flex items-center justify-center space-x-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Evaluate Drawing</span>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Results Evaluation Modal -->
+    <div id="results-modal"
+        class="fixed inset-0 bg-slate-900/60 backdrop-blur-md hidden flex items-center justify-center z-50 p-4">
+        <div
+            class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-slate-100 text-center space-y-4 transform transition-all scale-100">
+            <div id="modal-icon-bg"
+                class="w-16 h-16 bg-indigo-100 rounded-3xl flex items-center justify-center mx-auto text-indigo-600">
+                <svg id="modal-icon-svg" class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <h3 class="text-2xl font-black text-slate-800">AI Evaluation</h3>
+
+            <div class="grid grid-cols-2 gap-3 text-left">
+                <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                    <div class="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider">Target</div>
+                    <div id="modal-target-text" class="text-2xl font-black text-slate-700">A</div>
+                </div>
+                <div class="bg-indigo-50 p-3 rounded-2xl border border-indigo-200">
+                    <div class="text-[10px] font-extrabold uppercase text-indigo-400 tracking-wider">AI Recognized</div>
+                    <div id="modal-predicted-text" class="text-2xl font-black text-indigo-700">A</div>
+                </div>
+            </div>
+
+            <div id="modal-fail-banner"
+                class="hidden p-4 rounded-2xl bg-rose-50 border-2 border-rose-300 text-rose-700 shadow-sm text-left">
+                <div class="flex items-center space-x-2 font-black text-base text-rose-600 mb-1">
+                    <svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Incorrect Drawing!</span>
+                </div>
+                <p id="modal-fail-message" class="text-xs font-semibold text-rose-600">The model recognized a different character. Try again!</p>
+            </div>
+
+            <div id="modal-confidence-container" class="py-4 bg-emerald-50 rounded-2xl border border-emerald-200">
+                <div class="text-xs font-extrabold text-emerald-600 uppercase tracking-widest">Model Confidence</div>
+                <div id="modal-confidence-text" class="text-5xl font-black text-emerald-600 my-1">98%</div>
+                <div id="modal-score-reward"
+                    class="mt-2 inline-flex items-center space-x-1.5 bg-amber-400 text-indigo-950 font-black px-3 py-1 rounded-full text-xs shadow-md animate-bounce">
+                    <span>🏆 +150 Points Earned!</span>
+                </div>
+            </div>
+
+            <div id="modal-coaching-box" class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-left">
+                <div
+                    class="flex items-center space-x-2 text-xs font-extrabold uppercase tracking-wider text-amber-700 mb-1">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+                    <span>Groq AI Writing Coach</span>
+                </div>
+                <p id="modal-coaching-text" class="text-xs font-bold text-amber-900 leading-relaxed">
+                    Try drawing the main lines a little clearer!
+                </p>
+            </div>
+
+            <button id="modal-action-btn" onclick="closeModal()"
+                class="w-full py-3.5 bg-indigo-600 text-white font-black rounded-2xl shadow-lg hover:bg-indigo-700 transition-all text-base">
+                Try Another Drawing
+            </button>
+        </div>
+    </div>
+
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400 font-semibold">
+        MindBuzz Engine - Spatial Vector Tracking &amp; Convolutional Neural Net Validation
+    </footer>
+
+    <script src="js/api_client.js?v=1.0.1"></script>
+    <script src="js/canvas_engine.js?v=1.0.1"></script>
+</body>
+
+</html>
